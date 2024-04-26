@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Matchfixing
 {
@@ -13,6 +16,14 @@ namespace Matchfixing
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            // Configure CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowMyFrontend",
+                    builder => builder.WithOrigins("http://localhost:5000")
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader());
+            });
 
             var app = builder.Build();
 
@@ -22,6 +33,8 @@ namespace Matchfixing
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowMyFrontend");
 
             app.UseHttpsRedirection();
 
